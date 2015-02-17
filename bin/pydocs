@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+# pydocs
+# File: bin/pydocs
+# Desc: runs pydocs in the current directory
+
+from pydocs import main
+
+
+if __name__ == '__main__':
+    main()
