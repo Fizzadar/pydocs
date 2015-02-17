@@ -1,22 +1,3 @@
-##### Test.__init__
-
-```py
-pydocs.Test.__init__(
-    self
-)
-```
-
-
-##### Test.test
-
-```py
-pydocs.Test.test(
-    self,
-    f_off=True
-)
-```
-
-
 ##### build
 
 Build markdown documentation from a directory and/or python module.
