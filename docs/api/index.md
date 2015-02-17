@@ -12,7 +12,7 @@ pydocs.Test.__init__(
 ```py
 pydocs.Test.test(
     self,
-    fuckoff=True
+    f_off=True
 )
 ```
 
