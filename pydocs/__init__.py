@@ -1,6 +1,6 @@
 # pydocs
 # File: __init__.py
-# Desc: pydocs builds markdown documentation from your Python files/modules/functions/classes/docstrings
+# Desc: pydocs builds *simple* markdown documentation from your Python files/modules/functions/classes/docstrings
 
 import os
 import sys
