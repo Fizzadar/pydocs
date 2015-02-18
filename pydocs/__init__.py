@@ -1,80 +1,15 @@
 # pydocs
 # File: __init__.py
-# Desc: pydocs builds *simple* markdown documentation from your Python files/modules/functions/classes/docstrings
+# Desc: pydocs builds *simple* markdown documentation
+#       uses your Python files/modules/functions/classes/docstrings
 
 import os
 import sys
 import json
 from importlib import import_module
 from os import path, getcwd, chdir, walk, makedirs
-from inspect import getmembers, getargspec, isfunction, isclass, ismethod
 
-from jinja2 import Template
-
-from .templates import function_template
-
-
-_function_template = Template(function_template, trim_blocks=True)
-
-def _parse_function(module, name, type, cls=None):
-    # Attempt to get decorated function
-    if hasattr(type, '__decorated__'):
-        type = type.__decorated__
-
-    # Get arguments, build defaults
-    argspec = getargspec(type)
-    defaults = dict(zip(argspec.args[-len(argspec.defaults):], argspec.defaults)) if argspec.defaults else {}
-
-    # Render our function template
-    return _function_template.render({
-        'module': module.__name__,
-        'class': cls.__name__ if cls else None,
-        'name': name,
-        'args': argspec.args,
-        'defaults': defaults,
-        'doc_string': type.__doc__
-    })
-
-def _parse_class(module, name, type):
-    class_attributes = [
-        (sub_name, sub_type)
-        for (sub_name, sub_type) in getmembers(type)
-        if ismethod(sub_type)
-        and (
-            not getattr(sub_type, '__name__', '_').startswith('_')
-            or getattr(sub_type, '__name__', '_') == '__init__'
-        )
-    ]
-
-    class_docs = [
-        _parse_function(module, sub_name, sub_type, cls=type)
-        for (sub_name, sub_type) in class_attributes
-    ]
-
-    return u'\n'.join(class_docs)
-
-
-def parse_module(module):
-    '''Parse a module's attributes and generate a markdown document.'''
-    attributes = [
-        (name, type)
-        for (name, type) in getmembers(module)
-        if (isclass(type) or isfunction(type))
-        and type.__module__ == module.__name__
-        and not type.__name__.startswith('_')
-    ]
-
-    attribute_docs = []
-
-    for (name, type) in attributes:
-        if isfunction(type):
-            attribute_docs.append(_parse_function(module, name, type))
-        else:
-            attribute_docs.append(_parse_class(module, name, type))
-
-    return u'{}\n'.format(
-        u'\n'.join(attribute_docs).strip()
-    )
+from .parse import parse_module
 
 
 def _parse_module_list(module_list):
@@ -88,7 +23,6 @@ def _parse_module_list(module_list):
 
         # Assign to meta.content
         module_meta['content'] = output
-
 
 def _build_module_list(source_module):
     '''Builds a list of python modules in the current directory.'''
@@ -138,7 +72,6 @@ def _build_module_list(source_module):
 
     return out
 
-
 def _write_docs(module_list, output_dir):
     '''Write the document meta to our output location.'''
     for module_meta in module_list:
@@ -152,19 +85,22 @@ def _write_docs(module_list, output_dir):
         file.write(module_meta['content'])
         file.close()
 
-
 def build(root, source_module, output_dir, json_dump=False):
     '''Build markdown documentation from a directory and/or python module.'''
     if root.endswith('/'):
         root = root[:-1]
 
+    # Ensure output_dir format (no / at start, / at end)
     if output_dir.startswith('/'):
         output_dir = output_dir[1:]
 
     if not output_dir.endswith('/'):
         output_dir = '{}/'.format(output_dir)
 
+    # Apply root to it, make the directory if not exists
     output_dir = '{}/{}'.format(root, output_dir)
+    if not path.isdir(output_dir):
+            makedirs(output_dir)
 
     if source_module == '.':
         source_dir = '{}/'.format(root)
