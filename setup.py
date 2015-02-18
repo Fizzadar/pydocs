@@ -20,5 +20,6 @@ if __name__ == '__main__':
             'bin/pydocs'
         ],
         install_requires=[
+            'jinja2>=2'
         ]
     )
