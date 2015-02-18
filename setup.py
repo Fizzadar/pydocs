@@ -20,6 +20,7 @@ if __name__ == '__main__':
             'bin/pydocs'
         ],
         install_requires=[
-            'jinja2>=2'
+            'jinja2>=2',
+            'docopt>=0.6'
         ]
     )
