@@ -1,5 +1,6 @@
-# 0.1 (wip)
+# 0.1
 
 + Init pydocs
 + Support for documenting functions & their arguments
++ Function support
 + Basic class support
