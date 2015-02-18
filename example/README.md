@@ -1,8 +1,8 @@
-## example
+## fake_module
 
 Welcome to the pydocs example.
 
-##### example.args_function
+##### fake_module.args_function
 
 Another example with no-default arguments & some varargs.
 
@@ -15,7 +15,7 @@ args_function(
 ```
 
 
-##### example.combined_function
+##### fake_module.combined_function
 
 A function combining all of the above.
 
@@ -30,7 +30,7 @@ combined_function(
 ```
 
 
-##### example.function
+##### fake_module.function
 
 An example function.
 
@@ -39,7 +39,7 @@ function()
 ```
 
 
-##### example.kwargs_function
+##### fake_module.kwargs_function
 
 A function with keyword arguments & a keywords argument.
 
@@ -52,7 +52,7 @@ kwargs_function(
 ```
 
 
-##### example.wip_arg_comments
+##### fake_module.wip_arg_comments
 
 A test for commenting on arguments nicely & simply.
 

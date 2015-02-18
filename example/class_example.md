@@ -1,8 +1,8 @@
-## example.class_example
+## fake_module.class_example
 
 Example classes for pydocs.
 
-##### example.class_example.ExampleClass.__init__
+##### fake_module.class_example.ExampleClass.__init__
 
 ```py
 ExampleClass.__init__(
@@ -14,7 +14,7 @@ ExampleClass.__init__(
 ```
 
 
-##### example.class_example.ExampleClass.some_function
+##### fake_module.class_example.ExampleClass.some_function
 
 Example function inside a class.
 
