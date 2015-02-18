@@ -4,10 +4,11 @@
 #       uses your Python files/modules/functions/classes/docstrings
 
 import os
-import sys
 import json
 from importlib import import_module
 from os import path, getcwd, chdir, walk, makedirs
+
+from docopt import docopt
 
 from .parse import parse_module
 
@@ -24,7 +25,7 @@ def _parse_module_list(module_list):
         # Assign to meta.content
         module_meta['content'] = output
 
-def _build_module_list(source_module):
+def _build_module_list(source_module, index_filename, ignore_modules):
     '''Builds a list of python modules in the current directory.'''
     out = []
     dirs_with_init = set()
@@ -47,6 +48,10 @@ def _build_module_list(source_module):
             if module_name.startswith('.'):
                 module_name = module_name[1:]
 
+            if module_name in ignore_modules:
+                print 'Ignored file: {}{}.py'.format('{}/'.format(root), filename)
+                continue
+
             if root and root not in dirs_with_init:
                 print 'No __init__.py, skipping: {}{}.py'.format('{}/'.format(root), filename)
                 continue
@@ -56,7 +61,7 @@ def _build_module_list(source_module):
                 source_name = '{}/{}'.format(root, source_name)
 
             if filename == '__init__':
-                output_name = 'index.md'
+                output_name = '{}.md'.format(index_filename)
             else:
                 output_name = '{}.md'.format(filename)
             if root:
@@ -85,10 +90,23 @@ def _write_docs(module_list, output_dir):
         file.write(module_meta['content'])
         file.close()
 
-def build(root, source_module, output_dir, json_dump=False):
-    '''Build markdown documentation from a directory and/or python module.'''
+def build(
+    root, source_module, output_dir,
+    json_dump=False, ignore_modules=None, index_filename='index'
+):
+    '''
+    Build markdown documentation from a directory and/or python module.
+
+    # ignore_modules: takes a list of module names to ignore
+    # index_filename: __init__.py output (default index.md), use README.md for github indexes
+    '''
     if root.endswith('/'):
         root = root[:-1]
+
+    if ignore_modules is None:
+        ignore_modules = []
+    elif isinstance(ignore_modules, str):
+        ignore_modules = ignore_modules.split(',')
 
     # Ensure output_dir format (no / at start, / at end)
     if output_dir.startswith('/'):
@@ -110,7 +128,11 @@ def build(root, source_module, output_dir, json_dump=False):
     # Cd into the source directory
     chdir(source_dir)
     # And build the module list
-    module_list = _build_module_list(source_module)
+    module_list = _build_module_list(
+        source_module,
+        index_filename=index_filename,
+        ignore_modules=ignore_modules
+    )
 
     # Cd back to old directory
     chdir(root)
@@ -128,8 +150,26 @@ def build(root, source_module, output_dir, json_dump=False):
 
 def main():
     '''Main in a function in case you place a build.py for pydocs inside the root directory.'''
-    root = getcwd()
-    source_module = sys.argv[1]
-    output_dir = sys.argv[2]
-    json_dump = '--json' in sys.argv
-    build(root, source_module, output_dir, json_dump=json_dump)
+
+    options = '''
+        pydocs
+
+        Usage:
+            pydocs SOURCE OUTPUT_DIR
+            pydocs SOURCE OUTPUT_DIR [--json] [--index NAME] [--ignore FILE,NAMES]
+            pydocs --help
+
+        Options:
+            SOURCE                  Source module, or . for current directory.
+            OUTPUT_DIR              The location to output the generated markdown.
+            --json                  Dump meta in JSON format upon completion.
+            --index NAME            Name of the index file (default index.md) to generate.
+            --ignore FILE,NAMES     Comma separated modules to ignore/skip.
+            -h --help               Show this screen.
+            --version               Show version.
+    '''
+    args = docopt(options)
+    build(
+        getcwd(), args['SOURCE'], args['OUTPUT_DIR'],
+        json_dump=args['--json'], ignore_modules=args['--ignore'], index_filename=args['--index'] or 'index'
+    )
