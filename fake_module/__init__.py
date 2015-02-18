@@ -1,5 +1,11 @@
 '''
 Welcome to the pydocs example.
+
+These are generated within the git source root with:
+
+```
+pydocs fake_module example/
+```
 '''
 
 
