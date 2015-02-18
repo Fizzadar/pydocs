@@ -1,9 +1,12 @@
-##### build
+## pydocs
+
+
+##### pydocs.build
 
 Build markdown documentation from a directory and/or python module.
 
 ```py
-pydocs.build(
+build(
     root,
     source_module,
     output_dir,
@@ -12,22 +15,10 @@ pydocs.build(
 ```
 
 
-##### main
+##### pydocs.main
 
 Main in a function in case you place a build.py for pydocs inside the root directory.
 
 ```py
-pydocs.main(
-)
-```
-
-
-##### parse_module
-
-Parse a module's attributes and generate a markdown document.
-
-```py
-pydocs.parse_module(
-    module
-)
+main()
 ```
