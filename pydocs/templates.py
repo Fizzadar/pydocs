@@ -21,13 +21,15 @@ function_template = Template('''
 
 {% endfor %}
 {% if varargs %}
-    *{{ varargs }}{% if kwargs %},
+    {{ varargs }}{% if kwargs %},{% if varargs in arg_comments %} # {{ arg_comments[varargs] }}{% endif %}
+
 {% else %}
 
 {% endif %}
 {% endif %}
 {% if kwargs %}
-    **{{ kwargs }}
+    {{ kwargs }}{% if kwargs in arg_comments %} # {{ arg_comments[kwargs] }}{% endif %}
+
 {% endif %}
 {% endif %})
 ```

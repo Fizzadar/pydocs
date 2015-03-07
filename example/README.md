@@ -16,8 +16,8 @@ A test for commenting on arguments nicely & simply.
 arg_comments(
     arg1, # string argument for something
     key=True, # used to auth somewhere
-    *the_rest,
-    **kwargs
+    *the_rest, # list of targets
+    **kwargs # map of locations -> targets
 )
 ```
 
@@ -30,7 +30,8 @@ Another example with no-default arguments & some varargs.
 args_function(
     arg1,
     arg2,
-    *args
+    *args,
+    **None
 )
 ```
 
@@ -67,6 +68,7 @@ A function with keyword arguments & a keywords argument.
 kwargs_function(
     key=None,
     something=True,
+    *None,
     **kwargs
 )
 ```

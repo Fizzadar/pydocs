@@ -8,7 +8,7 @@ Example classes for pydocs.
 ExampleClass.__init__(
     self,
     test,
-    *args,
+    *args, # list of arguments
     **kargs
 )
 ```
@@ -20,6 +20,8 @@ Example function inside a class.
 
 ```py
 ExampleClass.some_function(
-    self
+    self,
+    *None,
+    **None
 )
 ```

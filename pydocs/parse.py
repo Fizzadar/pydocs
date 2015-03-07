@@ -56,8 +56,8 @@ def _parse_function(module, name, type, cls=None):
         'class': cls.__name__ if cls else None,
         'name': name,
         'args': argspec.args,
-        'varargs': argspec.varargs,
-        'kwargs': argspec.keywords,
+        'varargs': '*{}'.format(argspec.varargs),
+        'kwargs': '**{}'.format(argspec.keywords),
         'defaults': defaults,
         'doc_string': docstring,
         'arg_comments': arg_comments
