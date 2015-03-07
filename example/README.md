@@ -8,6 +8,20 @@ These are generated within the git source root with:
 pydocs fake_module example/
 ```
 
+##### fake_module.arg_comments
+
+A test for commenting on arguments nicely & simply.
+
+```py
+arg_comments(
+    arg1, # string argument for something
+    key=True, # used to auth somewhere
+    *the_rest,
+    **kwargs
+)
+```
+
+
 ##### fake_module.args_function
 
 Another example with no-default arguments & some varargs.
@@ -15,7 +29,7 @@ Another example with no-default arguments & some varargs.
 ```py
 args_function(
     arg1,
-    arg2
+    arg2,
     *args
 )
 ```
@@ -29,8 +43,8 @@ A function combining all of the above.
 combined_function(
     arg1,
     key=True,
-    something='another'
-    *the_rest
+    something='another',
+    *the_rest,
     **keywords
 )
 ```
@@ -52,26 +66,7 @@ A function with keyword arguments & a keywords argument.
 ```py
 kwargs_function(
     key=None,
-    something=True
-    **kwargs
-)
-```
-
-
-##### fake_module.wip_arg_comments
-
-A test for commenting on arguments nicely & simply.
-
-# arg1: string argument for something
-# key: used to auth somewhere
-# *the_rest: list of targets
-# **kwargs: map of locations -> targets
-
-```py
-wip_arg_comments(
-    arg1,
-    key=True
-    *the_rest
+    something=True,
     **kwargs
 )
 ```

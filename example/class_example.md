@@ -7,8 +7,8 @@ Example classes for pydocs.
 ```py
 ExampleClass.__init__(
     self,
-    test
-    *args
+    test,
+    *args,
     **kargs
 )
 ```

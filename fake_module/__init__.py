@@ -25,7 +25,7 @@ def combined_function(arg1, key=True, something='another', *the_rest, **keywords
     '''A function combining all of the above.'''
     pass
 
-def wip_arg_comments(arg1, key=True, *the_rest, **kwargs):
+def arg_comments(arg1, key=True, *the_rest, **kwargs):
     '''
     A test for commenting on arguments nicely & simply.
 

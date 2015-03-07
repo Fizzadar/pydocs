@@ -16,11 +16,15 @@ function_template = Template('''
 {% if class %}{{ class }}.{% endif %}{{ name }}({% if args %}
 
 {% for arg in args %}
-    {{ arg }}{% if arg in defaults %}={{ defaults[arg] }}{% endif %}{% if not loop.last %},{% endif %}
+    {{ arg }}{% if arg in defaults %}={{ defaults[arg] }}{% endif %}
+{% if not loop.last or varargs or kwargs %},{% endif %}{% if arg in arg_comments %} # {{ arg_comments[arg] }}{% endif %}
 
 {% endfor %}
 {% if varargs %}
-    *{{ varargs }}
+    *{{ varargs }}{% if kwargs %},
+{% else %}
+
+{% endif %}
 {% endif %}
 {% if kwargs %}
     **{{ kwargs }}

@@ -2,19 +2,31 @@
 # File: parse.py
 # Desc: parse modules & their functions/classes, return markdown templates
 
+import re
 from inspect import getmembers, getargspec, isfunction, isclass, ismethod
 
 from .templates import function_template
 
 
+ARG_COMMENT_REGEX = r'# ([a-zA-Z0-9_\*]+): (.*)'
+
 def _parse_docstring(docstring):
     if docstring is None:
-        return None
+        return None, {}
 
-    docstrings = docstring.split('\n')
-    docstrings = [string.strip() for string in docstrings]
+    docstrings = [string.strip() for string in docstring.split('\n')]
 
-    return '\n'.join(docstrings).strip()
+    outputs = []
+    arg_comments = {}
+
+    for line in docstrings:
+        matches = re.search(ARG_COMMENT_REGEX, line)
+        if matches:
+            arg_comments[matches.group(1)] = matches.group(2)
+        else:
+            outputs.append(line)
+
+    return '\n'.join(outputs).strip(), arg_comments
 
 
 def _parse_function(module, name, type, cls=None):
@@ -36,6 +48,8 @@ def _parse_function(module, name, type, cls=None):
         arg_defaults
     )) if arg_defaults else {}
 
+    docstring, arg_comments = _parse_docstring(type.__doc__)
+
     # Render our function template
     return function_template.render({
         'module': module.__name__,
@@ -45,8 +59,10 @@ def _parse_function(module, name, type, cls=None):
         'varargs': argspec.varargs,
         'kwargs': argspec.keywords,
         'defaults': defaults,
-        'doc_string': _parse_docstring(type.__doc__)
+        'doc_string': docstring,
+        'arg_comments': arg_comments
     })
+
 
 def _parse_class(module, name, type):
     class_attributes = [
@@ -66,6 +82,7 @@ def _parse_class(module, name, type):
 
     return u'\n'.join(class_docs)
 
+
 def parse_module(module):
     '''Parse a module's attributes and generate a markdown document.'''
     attributes = [
@@ -79,7 +96,8 @@ def parse_module(module):
     attribute_docs = ['## {}'.format(module.__name__), '']
 
     if module.__doc__:
-        attribute_docs.append(_parse_docstring(module.__doc__))
+        docstring, _ = _parse_docstring(module.__doc__)
+        attribute_docs.append(docstring)
 
     for (name, type) in attributes:
         if isfunction(type):
