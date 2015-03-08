@@ -30,8 +30,7 @@ Another example with no-default arguments & some varargs.
 args_function(
     arg1,
     arg2,
-    *args,
-    **None
+    *args
 )
 ```
 
@@ -68,7 +67,6 @@ A function with keyword arguments & a keywords argument.
 kwargs_function(
     key=None,
     something=True,
-    *None,
     **kwargs
 )
 ```
