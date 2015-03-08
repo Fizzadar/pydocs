@@ -20,8 +20,6 @@ Example function inside a class.
 
 ```py
 ExampleClass.some_function(
-    self,
-    *None,
-    **None
+    self
 )
 ```
