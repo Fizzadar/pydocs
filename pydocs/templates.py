@@ -35,6 +35,3 @@ function_template = Template('''
 ```
 
 ''', trim_blocks=True)
-
-def test(thing):
-    print thing

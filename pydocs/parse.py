@@ -29,13 +29,13 @@ def _parse_docstring(docstring):
     return '\n'.join(outputs).strip(), arg_comments
 
 
-def _parse_function(module, name, type, cls=None):
+def _parse_function(module, name, type_, cls=None):
     # Attempt to get decorated function
-    if hasattr(type, '__decorated__'):
-        type = type.__decorated__
+    if hasattr(type_, '__decorated__'):
+        type_ = type_.__decorated__
 
     # Get arguments, build defaults
-    argspec = getargspec(type)
+    argspec = getargspec(type_)
     # Make default strings appear as strings
     arg_defaults = [
         "'{}'".format(arg) if isinstance(arg, str) else arg
@@ -48,7 +48,7 @@ def _parse_function(module, name, type, cls=None):
         arg_defaults
     )) if arg_defaults else {}
 
-    docstring, arg_comments = _parse_docstring(type.__doc__)
+    docstring, arg_comments = _parse_docstring(type_.__doc__)
 
     # Render our function template
     return function_template.render({
@@ -64,10 +64,10 @@ def _parse_function(module, name, type, cls=None):
     })
 
 
-def _parse_class(module, name, type):
+def _parse_class(module, name, type_):
     class_attributes = [
         (sub_name, sub_type)
-        for (sub_name, sub_type) in getmembers(type)
+        for (sub_name, sub_type) in getmembers(type_)
         if ismethod(sub_type)
         and (
             not getattr(sub_type, '__name__', '_').startswith('_')
@@ -76,7 +76,7 @@ def _parse_class(module, name, type):
     ]
 
     class_docs = [
-        _parse_function(module, sub_name, sub_type, cls=type)
+        _parse_function(module, sub_name, sub_type, cls=type_)
         for (sub_name, sub_type) in class_attributes
     ]
 
@@ -86,25 +86,30 @@ def _parse_class(module, name, type):
 def parse_module(module):
     '''Parse a module's attributes and generate a markdown document.'''
     attributes = [
-        (name, type)
-        for (name, type) in getmembers(module)
-        if (isclass(type) or isfunction(type))
-        and type.__module__ == module.__name__
-        and not type.__name__.startswith('_')
+        (name, type_)
+        for (name, type_) in getmembers(module)
+        if (isclass(type_) or isfunction(type_))
+        and type_.__module__ == module.__name__
+        and not type_.__name__.startswith('_')
     ]
 
-    attribute_docs = ['## {}'.format(module.__name__), '']
+    attribute_docs = ['## {0}'.format(module.__name__), '']
 
     if module.__doc__:
         docstring, _ = _parse_docstring(module.__doc__)
         attribute_docs.append(docstring)
 
-    for (name, type) in attributes:
-        if isfunction(type):
-            attribute_docs.append(_parse_function(module, name, type))
-        else:
-            attribute_docs.append(_parse_class(module, name, type))
+    if hasattr(module, '__all__'):
+        for name in module.__all__:
+            link = '+ [{0}](./{0}.md)'.format(name)
+            attribute_docs.append(link)
 
-    return u'{}\n'.format(
+    for (name, type_) in attributes:
+        if isfunction(type_):
+            attribute_docs.append(_parse_function(module, name, type_))
+        else:
+            attribute_docs.append(_parse_class(module, name, type_))
+
+    return u'{0}\n'.format(
         u'\n'.join(attribute_docs).strip()
     )
