@@ -7,7 +7,7 @@ from setuptools import setup
 
 if __name__ == '__main__':
     setup(
-        version='0.1',
+        version='0.2',
         name='pydocs',
         description='Auto generate markdown documents with Python.',
         author='Nick @ Oxygem',
